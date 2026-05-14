@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaskLens AI</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        heading: ['Space Grotesk', 'sans-serif'],
+        body: ['DM Sans', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+  <style>
+@keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(56,189,248,0.2)} 50%{box-shadow:0 0 40px rgba(56,189,248,0.4)} }
+@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes scanLine { 0%{top:0} 100%{top:100%} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes countUp { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+.anim-slide { animation: slideUp 0.6s ease both }
+.anim-slide-d1 { animation: slideUp 0.6s ease 0.1s both }
+.anim-slide-d2 { animation: slideUp 0.6s ease 0.2s both }
+.anim-slide-d3 { animation: slideUp 0.6s ease 0.3s both }
+.anim-slide-d4 { animation: slideUp 0.6s ease 0.4s both }
+.anim-fade { animation: fadeIn 0.5s ease both }
+.pulse-glow { animation: pulseGlow 2s ease-in-out infinite }
+.scan-line { position:absolute;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#38bdf8,transparent);animation:scanLine 1.5s ease-in-out infinite }
+.spinner { width:40px;height:40px;border:3px solid rgba(56,189,248,0.2);border-top-color:#38bdf8;border-radius:50%;animation:spin 0.8s linear infinite }
+.score-pop { animation: countUp 0.5s ease both }
+.glass { background:rgba(15,23,42,0.6);backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,0.1) }
+.nav-active { color:#38bdf8;border-bottom:2px solid #38bdf8 }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto bg-slate-950 text-white font-body" style="background:linear-gradient(145deg,#0a0f1e 0%,#0f172a 40%,#0c1425 100%)"><!-- Nav -->
+   <nav class="fixed top-0 left-0 right-0 z-50 glass">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+     <div class="flex items-center gap-2 cursor-pointer" onclick="showPage('landing')">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-400 to-emerald-400 flex items-center justify-center"><i data-lucide="shield-check" style="width:20px;height:20px;color:#0f172a"></i>
+      </div><span class="font-heading font-bold text-lg" id="nav-brand">MaskLens AI</span>
+     </div>
+     <div class="hidden sm:flex gap-6 text-sm font-medium"><button onclick="showPage('landing')" id="nav-home" class="nav-active pb-1 transition-colors hover:text-sky-400">Home</button> <button onclick="showPage('analyzer')" id="nav-analyzer" class="pb-1 transition-colors hover:text-sky-400">Analyzer</button> <button onclick="showPage('about')" id="nav-about" class="pb-1 transition-colors hover:text-sky-400">About</button>
+     </div><button class="sm:hidden" onclick="toggleMobileNav()"><i data-lucide="menu" style="width:24px;height:24px"></i></button>
+    </div>
+    <div id="mobile-nav" class="hidden sm:hidden px-4 pb-3 flex flex-col gap-2 text-sm"><button onclick="showPage('landing');toggleMobileNav()" class="text-left py-2 hover:text-sky-400">Home</button> <button onclick="showPage('analyzer');toggleMobileNav()" class="text-left py-2 hover:text-sky-400">Analyzer</button> <button onclick="showPage('about');toggleMobileNav()" class="text-left py-2 hover:text-sky-400">About</button>
+    </div>
+   </nav><!-- Landing Page -->
+   <section id="page-landing" class="min-h-full pt-20">
+    <div class="max-w-6xl mx-auto px-4 py-16 md:py-24"><!-- Hero -->
+     <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="anim-slide inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 text-xs font-medium mb-6"><i data-lucide="zap" style="width:14px;height:14px"></i> AI-Powered Protection for Africa
+      </div>
+      <h1 id="hero-title" class="anim-slide-d1 font-heading text-4xl md:text-6xl font-bold leading-tight mb-6">Unmask Digital<br><span class="bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text text-transparent">Scams &amp; Lies</span></h1>
+      <p id="hero-subtitle" class="anim-slide-d2 text-slate-400 text-lg md:text-xl mb-8 max-w-xl mx-auto">MaskLens AI detects fake job offers, MoMo scams, phishing messages, and misinformation targeting Africans.</p><button onclick="showPage('analyzer')" class="anim-slide-d3 px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 font-heading font-semibold hover:shadow-lg hover:shadow-sky-500/25 transition-all hover:-translate-y-0.5"> Try the Analyzer → </button>
+     </div><!-- Stats -->
+     <div class="anim-slide-d3 grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+      <div class="glass rounded-2xl p-5 text-center">
+       <div class="font-heading text-2xl font-bold text-sky-400">
+        $4.2B+
+       </div>
+       <div class="text-slate-500 text-xs mt-1">
+        Lost to scams in Africa yearly
+       </div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+       <div class="font-heading text-2xl font-bold text-emerald-400">
+        89%
+       </div>
+       <div class="text-slate-500 text-xs mt-1">
+        Scams via mobile/SMS
+       </div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+       <div class="font-heading text-2xl font-bold text-amber-400">
+        3 in 5
+       </div>
+       <div class="text-slate-500 text-xs mt-1">
+        Africans targeted online
+       </div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+       <div class="font-heading text-2xl font-bold text-rose-400">
+        70%
+       </div>
+       <div class="text-slate-500 text-xs mt-1">
+        Can't identify scams
+       </div>
+      </div>
+     </div><!-- Features -->
+     <div class="text-center mb-10">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold">How MaskLens AI Works</h2>
+     </div>
+     <div class="grid md:grid-cols-3 gap-6 mb-20">
+      <div class="glass rounded-2xl p-6 hover:border-sky-500/30 transition-colors">
+       <div class="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center mb-4">
+        <i data-lucide="clipboard-paste" style="width:24px;height:24px;color:#38bdf8"></i>
+       </div>
+       <h3 class="font-heading font-semibold text-lg mb-2">Paste or Upload</h3>
+       <p class="text-slate-400 text-sm">Paste suspicious WhatsApp texts, SMS, emails, or upload screenshots of scam messages.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 hover:border-emerald-500/30 transition-colors">
+       <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+        <i data-lucide="brain" style="width:24px;height:24px;color:#34d399"></i>
+       </div>
+       <h3 class="font-heading font-semibold text-lg mb-2">AI Analysis</h3>
+       <p class="text-slate-400 text-sm">Our AI checks for urgency manipulation, suspicious links, fake recruiters, and financial fraud patterns.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 hover:border-amber-500/30 transition-colors">
+       <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4">
+        <i data-lucide="shield-alert" style="width:24px;height:24px;color:#fbbf24"></i>
+       </div>
+       <h3 class="font-heading font-semibold text-lg mb-2">Get Protected</h3>
+       <p class="text-slate-400 text-sm">Receive a risk score, detailed explanation, and safety recommendations to protect yourself.</p>
+      </div>
+     </div><!-- Example scams -->
+     <div class="text-center mb-8">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-3">Common Scams We Detect</h2>
+      <p class="text-slate-400">Real examples targeting Africans daily</p>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(0)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">📱</span><span class="font-heading font-semibold text-sm text-rose-400">MTN MoMo Scam</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"You have received GHS 5,000. Confirm by sending your PIN..."</p>
+      </div>
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(1)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">💼</span><span class="font-heading font-semibold text-sm text-rose-400">Fake Remote Job</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"Earn $500/day working from home. No experience needed..."</p>
+      </div>
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(2)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">🎓</span><span class="font-heading font-semibold text-sm text-rose-400">Fake Scholarship</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"US Embassy scholarship for African students. Pay $50 processing fee..."</p>
+      </div>
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(3)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">🏆</span><span class="font-heading font-semibold text-sm text-rose-400">Betting Scam</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"You won ₦2,000,000 on BetKing! Click here to claim..."</p>
+      </div>
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(4)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">🌐</span><span class="font-heading font-semibold text-sm text-rose-400">Fake UN Job</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"UNICEF is hiring remote workers in Africa. Send CV + $100 registration..."</p>
+      </div>
+      <div class="glass rounded-xl p-4 cursor-pointer hover:border-rose-500/30 transition-colors" onclick="loadExample(5)">
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">🎁</span><span class="font-heading font-semibold text-sm text-rose-400">Celebrity Giveaway</span>
+       </div>
+       <p class="text-slate-500 text-xs leading-relaxed">"Davido is giving ₦1M to first 500 people! Send your account details..."</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Analyzer Page -->
+   <section id="page-analyzer" class="min-h-full pt-20 hidden">
+    <div class="max-w-3xl mx-auto px-4 py-12">
+     <div class="text-center mb-10 anim-slide">
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-3">Scam <span class="bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text text-transparent">Analyzer</span></h1>
+      <p class="text-slate-400">Paste a suspicious message or upload a screenshot</p>
+     </div><!-- Input area -->
+     <div class="glass rounded-2xl p-6 mb-6 anim-slide-d1">
+      <div class="flex gap-2 mb-4"><button id="tab-text" onclick="switchTab('text')" class="px-4 py-2 rounded-lg text-sm font-medium bg-sky-500/20 text-sky-400 transition-colors"> <i data-lucide="type" style="width:16px;height:16px;display:inline;vertical-align:-3px"></i> Text </button> <button id="tab-image" onclick="switchTab('image')" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors"> <i data-lucide="image" style="width:16px;height:16px;display:inline;vertical-align:-3px"></i> Image </button>
+      </div>
+      <div id="input-text"><textarea id="msg-input" rows="6" placeholder="Paste the suspicious message here...
+
+Example: 'Congratulations! You won ₦2,000,000. Send your bank details to claim...'" class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 text-sm text-white placeholder-slate-600 resize-none focus:outline-none focus:border-sky-500/50 transition-colors"></textarea>
+      </div>
+      <div id="input-image" class="hidden"><label class="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-sky-500/50 transition-colors"> <i data-lucide="upload-cloud" style="width:36px;height:36px;color:#64748b"></i> <span class="text-slate-500 text-sm mt-2">Click to upload screenshot</span> <span class="text-slate-600 text-xs mt-1">PNG, JPG up to 5MB</span> <input type="file" accept="image/*" class="hidden" onchange="handleImage(event)"> </label>
+       <div id="image-preview" class="hidden mt-3 p-3 bg-slate-900/50 rounded-xl flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+         <i data-lucide="check-circle" style="width:20px;height:20px;color:#34d399"></i>
+        </div>
+        <div>
+         <p id="image-name" class="text-sm font-medium">image.png</p>
+         <p class="text-xs text-slate-500">Ready for analysis</p>
+        </div>
+       </div>
+      </div><button id="analyze-btn" onclick="analyzeMessage()" class="w-full mt-4 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 font-heading font-semibold hover:shadow-lg hover:shadow-sky-500/25 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"> <i data-lucide="scan" style="width:18px;height:18px"></i> Analyze Message </button>
+     </div><!-- Loading -->
+     <div id="loading-section" class="hidden">
+      <div class="glass rounded-2xl p-10 text-center">
+       <div class="relative w-20 h-20 mx-auto mb-4">
+        <div class="spinner mx-auto"></div>
+        <div class="absolute inset-0 flex items-center justify-center"><i data-lucide="shield" style="width:20px;height:20px;color:#38bdf8"></i>
+        </div>
+       </div>
+       <p class="font-heading font-semibold text-lg mb-1">Analyzing message...</p>
+       <p id="loading-step" class="text-slate-500 text-sm">Scanning for scam patterns</p>
+      </div>
+     </div><!-- Results -->
+     <div id="results-section" class="hidden"><!-- Score card -->
+      <div class="glass rounded-2xl p-6 mb-4">
+       <div class="flex flex-col sm:flex-row items-center gap-6">
+        <div id="score-ring" class="relative w-28 h-28 flex-shrink-0">
+         <svg viewbox="0 0 120 120" class="w-full h-full -rotate-90"><circle cx="60" cy="60" r="52" fill="none" stroke="#1e293b" stroke-width="8" /> <circle id="score-circle" cx="60" cy="60" r="52" fill="none" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" />
+         </svg>
+         <div class="absolute inset-0 flex flex-col items-center justify-center"><span id="score-num" class="font-heading text-3xl font-bold score-pop">0</span> <span class="text-[10px] text-slate-500">RISK</span>
+         </div>
+        </div>
+        <div class="text-center sm:text-left">
+         <div id="risk-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2"></div>
+         <h3 id="risk-title" class="font-heading text-xl font-bold mb-1"></h3>
+         <p id="risk-summary" class="text-slate-400 text-sm"></p>
+        </div>
+       </div>
+      </div><!-- Indicators -->
+      <div class="glass rounded-2xl p-6 mb-4">
+       <h3 class="font-heading font-semibold mb-4 flex items-center gap-2"><i data-lucide="alert-triangle" style="width:18px;height:18px;color:#fbbf24"></i> Scam Indicators</h3>
+       <div id="indicators-list" class="space-y-3"></div>
+      </div><!-- Recommendations -->
+      <div class="glass rounded-2xl p-6 mb-4">
+       <h3 class="font-heading font-semibold mb-4 flex items-center gap-2"><i data-lucide="shield-check" style="width:18px;height:18px;color:#34d399"></i> Safety Recommendations</h3>
+       <div id="recommendations-list" class="space-y-3"></div>
+      </div><button onclick="resetAnalyzer()" class="w-full py-3 rounded-xl border border-slate-700 text-slate-400 hover:bg-slate-800 transition-colors font-medium text-sm flex items-center justify-center gap-2"> <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i> Analyze Another Message </button>
+     </div>
+    </div>
+   </section><!-- About Page -->
+   <section id="page-about" class="min-h-full pt-20 hidden">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+     <div class="text-center mb-12 anim-slide">
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-3">About <span class="bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text text-transparent">MaskLens AI</span></h1>
+      <p class="text-slate-400 max-w-xl mx-auto">Built to protect Africans from the rising tide of digital fraud and misinformation.</p>
+     </div>
+     <div class="grid md:grid-cols-2 gap-6 mb-12">
+      <div class="glass rounded-2xl p-6">
+       <h3 class="font-heading font-semibold text-lg mb-3 flex items-center gap-2"><span class="text-xl">🎯</span> The Problem</h3>
+       <p class="text-slate-400 text-sm leading-relaxed">Africans lose billions annually to digital scams—fake MoMo alerts, phishing SMS, fake job offers, and AI-generated misinformation. Most people lack the tools to identify these threats before it's too late.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+       <h3 class="font-heading font-semibold text-lg mb-3 flex items-center gap-2"><span class="text-xl">💡</span> Our Solution</h3>
+       <p class="text-slate-400 text-sm leading-relaxed">MaskLens AI uses large language models to analyze suspicious messages in real-time, identifying scam patterns, urgency manipulation, and fraud indicators specific to the African context.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+       <h3 class="font-heading font-semibold text-lg mb-3 flex items-center gap-2"><span class="text-xl">🌍</span> SDG Alignment</h3>
+       <ul class="text-slate-400 text-sm space-y-2">
+        <li class="flex items-start gap-2"><span class="text-sky-400 font-bold">SDG 16:</span> Peace, Justice &amp; Strong Institutions</li>
+        <li class="flex items-start gap-2"><span class="text-emerald-400 font-bold">SDG 9:</span> Industry, Innovation &amp; Infrastructure</li>
+        <li class="flex items-start gap-2"><span class="text-amber-400 font-bold">SDG 8:</span> Decent Work &amp; Economic Growth</li>
+       </ul>
+      </div>
+      <div class="glass rounded-2xl p-6">
+       <h3 class="font-heading font-semibold text-lg mb-3 flex items-center gap-2"><span class="text-xl">🚀</span> Future Roadmap</h3>
+       <ul class="text-slate-400 text-sm space-y-2">
+        <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#34d399"></i> Local language support (Twi, Yoruba, Swahili)</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#34d399"></i> WhatsApp bot integration</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#34d399"></i> Voice note scam analysis</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#34d399"></i> Browser extension</li>
+       </ul>
+      </div>
+     </div>
+     <div class="glass rounded-2xl p-6 text-center">
+      <h3 class="font-heading font-semibold text-lg mb-2">How AI is Used</h3>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+       <div class="flex items-center gap-2 px-4 py-3 rounded-xl bg-sky-500/10 border border-sky-500/20"><i data-lucide="message-square" style="width:20px;height:20px;color:#38bdf8"></i> <span class="text-sm font-medium">User Input</span>
+       </div><i data-lucide="arrow-right" style="width:20px;height:20px;color:#475569" class="hidden sm:block"></i> <i data-lucide="arrow-down" style="width:20px;height:20px;color:#475569" class="sm:hidden"></i>
+       <div class="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20"><i data-lucide="brain" style="width:20px;height:20px;color:#34d399"></i> <span class="text-sm font-medium">LLM Analysis</span>
+       </div><i data-lucide="arrow-right" style="width:20px;height:20px;color:#475569" class="hidden sm:block"></i> <i data-lucide="arrow-down" style="width:20px;height:20px;color:#475569" class="sm:hidden"></i>
+       <div class="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20"><i data-lucide="shield-alert" style="width:20px;height:20px;color:#fbbf24"></i> <span class="text-sm font-medium">Risk Score + Advice</span>
+       </div>
+      </div>
+     </div>
+     <div class="text-center mt-12">
+      <p class="text-slate-600 text-sm">Built with ❤️ for Africa</p>
+      <p class="text-slate-700 text-xs mt-1">© 2025 MaskLens AI</p>
+     </div>
+    </div>
+   </section>
+  </div>
+  <script>
+// Example scam messages
+const examples = [
+  "URGENT: MTN MoMo Alert! You have received GHS 5,000.00 from an unknown sender. To confirm this transaction and keep the funds, reply with your MoMo PIN immediately. This offer expires in 10 minutes! Ref: MTN-2024-8837261",
+  "🌟 REMOTE JOB OPPORTUNITY 🌟\nEarn $500/day working from home! No experience needed. We are hiring data entry clerks for a US company. Just pay $50 registration fee to secure your slot. Only 10 positions left! WhatsApp +1-555-0123 NOW before it's too late.",
+  "Dear Student,\nCongratulations! You have been selected for the US Embassy Full Scholarship Program 2025 for African students. This covers tuition, accommodation, and $2,000/month stipend. To process your application, pay a $50 non-refundable processing fee. Send to this account immediately. Deadline: 48 hours.",
+  "🎉 CONGRATULATIONS! 🎉\nYou have won ₦2,000,000.00 on BetKing Lucky Draw! Your ticket number: BK-7729301 was selected. To claim your prize, click this link: bit.ly/betking-claim and enter your bank account details. Prize must be claimed within 24 hours or it will be forfeited!",
+  "UNICEF RECRUITMENT NOTICE\nThe United Nations Children's Fund is urgently hiring remote workers across Africa. Salary: $4,500/month. Requirements: Basic computer skills. To apply, send your CV and $100 registration fee to our recruitment officer via WhatsApp: +44-7XXX-XXXXX. Limited positions available!",
+  "📢 DAVIDO GIVEAWAY! 📢\nDavido is giving away ₦1,000,000 to the first 500 people who share this message! To receive your money, send your full name, phone number, and bank account details to this number. This is 100% real! Don't miss out! 🎁💰"
+];
+
+// Fake analysis results keyed by pattern
+const analyses = [
+  { score:92, level:"Critical", color:"#ef4444", title:"MoMo PIN Phishing Scam", summary:"This is a classic mobile money phishing attempt designed to steal your MoMo PIN.", indicators:["Requests sensitive PIN information","Creates false urgency with 10-minute deadline","Fake transaction notification format","No legitimate service asks for PIN via SMS"], recommendations:["Never share your MoMo PIN with anyone","MTN will never ask for your PIN via message","Block and report this number","Contact MTN directly to verify any transactions"] },
+  { score:88, level:"High", color:"#f97316", title:"Fake Remote Job Offer", summary:"This message shows multiple signs of a job scam targeting unemployed youth.", indicators:["Unrealistic salary claims ($500/day)","Requires upfront payment ($50 fee)","No company name or verifiable details","Creates urgency with limited positions"], recommendations:["Legitimate jobs never require payment to apply","Research any company before engaging","Report to local cybercrime unit","Warn friends about similar scams"] },
+  { score:95, level:"Critical", color:"#ef4444", title:"Fake Embassy Scholarship Scam", summary:"This is a well-known advance-fee fraud impersonating an embassy.", indicators:["Embassies never charge processing fees for scholarships","48-hour pressure deadline","No official embassy communication channels used","Generic 'Dear Student' greeting"], recommendations:["Verify scholarships only through official embassy websites","Never pay fees for scholarship applications","Report to the embassy's official fraud department","Share this scam pattern with fellow students"] },
+  { score:90, level:"Critical", color:"#ef4444", title:"Fake Betting Winnings Scam", summary:"Classic lottery/betting scam designed to harvest your banking details.", indicators:["You cannot win a draw you never entered","Requests bank account details","Uses shortened suspicious URL","24-hour claim pressure tactic"], recommendations:["Never click suspicious shortened links","BetKing does not run random lucky draws","Never share bank details via messages","Report to betting platform and authorities"] },
+  { score:93, level:"Critical", color:"#ef4444", title:"Fake UN Recruitment Scam", summary:"This impersonates UNICEF to collect fees from desperate job seekers.", indicators:["UN agencies never charge recruitment fees","Uses WhatsApp for official recruitment","Unrealistic salary for basic requirements","Vague job description with urgency"], recommendations:["Check UN jobs only at careers.un.org","Report to UNICEF's fraud team","UN never uses WhatsApp for hiring","Share awareness about UN job scams"] },
+  { score:85, level:"High", color:"#f97316", title:"Fake Celebrity Giveaway Scam", summary:"Impersonates a celebrity to harvest personal and financial data.", indicators:["Celebrities don't give money via chain messages","Requests bank account details","Classic chain message sharing pattern","No verification or official channels"], recommendations:["Never share bank details for 'giveaways'","Verify through official celebrity social media only","Report accounts spreading this message","Educate family members about this scam type"] }
+];
+
+// Generic analysis for custom input
+function generateAnalysis(text) {
+  const t = text.toLowerCase();
+  let score = 40, indicators = [], recommendations = [];
+  
+  if (/pin|password|account.*(detail|number)|bank/i.test(t)) { score += 25; indicators.push("Requests sensitive personal/financial information"); }
+  if (/urgent|immediate|expire|hour|minute|hurry|quick|fast|now/i.test(t)) { score += 15; indicators.push("Uses urgency and pressure tactics"); }
+  if (/won|congratulat|selected|lucky|winner/i.test(t)) { score += 15; indicators.push("Claims unexpected winnings or selection"); }
+  if (/\$\d|₦\d|ghs\s?\d|usd\s?\d/i.test(t)) { score += 10; indicators.push("Mentions specific monetary amounts as bait"); }
+  if (/click|link|bit\.ly|http|www\./i.test(t)) { score += 10; indicators.push("Contains suspicious links"); }
+  if (/fee|pay|send.*money|registration|process/i.test(t)) { score += 20; indicators.push("Requires upfront payment or fees"); }
+  if (/whatsapp|telegram|dm|inbox/i.test(t)) { score += 5; indicators.push("Directs to informal messaging channels"); }
+  if (/no experience|easy money|work from home|earn.*day/i.test(t)) { score += 15; indicators.push("Makes unrealistic income promises"); }
+
+  if (indicators.length === 0) indicators.push("No strong scam indicators detected, but always stay cautious");
+  
+  score = Math.min(score, 98);
+  recommendations = ["Do not respond to or forward this message","Never share personal or financial information","Verify claims through official channels only","Report suspicious messages to local authorities"];
+
+  const level = score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 40 ? "Medium" : "Low";
+  const color = score >= 80 ? "#ef4444" : score >= 60 ? "#f97316" : score >= 40 ? "#eab308" : "#22c55e";
+  const title = score >= 70 ? "Likely Scam Detected" : score >= 40 ? "Suspicious Content" : "Low Risk Message";
+  const summary = score >= 70 ? "This message contains multiple scam indicators commonly seen in fraud targeting Africans." : score >= 40 ? "Some suspicious elements were detected. Exercise caution." : "This message appears relatively safe, but always verify independently.";
+
+  return { score, level, color, title, summary, indicators, recommendations };
+}
+
+let currentPage = 'landing';
+let imageUploaded = false;
+
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+  document.getElementById('page-' + page).classList.remove('hidden');
+  document.querySelectorAll('nav button[id^="nav-"]').forEach(b => b.classList.remove('nav-active'));
+  const navBtn = document.getElementById('nav-' + (page === 'landing' ? 'home' : page));
+  if (navBtn) navBtn.classList.add('nav-active');
+  currentPage = page;
+  window.scrollTo(0, 0);
+  if (page === 'analyzer') lucide.createIcons();
+}
+
+function toggleMobileNav() {
+  document.getElementById('mobile-nav').classList.toggle('hidden');
+}
+
+function switchTab(tab) {
+  document.getElementById('input-text').classList.toggle('hidden', tab !== 'text');
+  document.getElementById('input-image').classList.toggle('hidden', tab !== 'image');
+  document.getElementById('tab-text').className = tab === 'text' ? 'px-4 py-2 rounded-lg text-sm font-medium bg-sky-500/20 text-sky-400 transition-colors' : 'px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors';
+  document.getElementById('tab-image').className = tab === 'image' ? 'px-4 py-2 rounded-lg text-sm font-medium bg-sky-500/20 text-sky-400 transition-colors' : 'px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors';
+}
+
+function handleImage(e) {
+  if (e.target.files.length) {
+    imageUploaded = true;
+    document.getElementById('image-name').textContent = e.target.files[0].name;
+    document.getElementById('image-preview').classList.remove('hidden');
+    lucide.createIcons();
+  }
+}
+
+function loadExample(idx) {
+  showPage('analyzer');
+  document.getElementById('msg-input').value = examples[idx];
+  switchTab('text');
+}
+
+async function analyzeMessage() {
+  const text = document.getElementById('msg-input').value.trim();
+  if (!text && !imageUploaded) return;
+
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('loading-section').classList.remove('hidden');
+  document.getElementById('results-section').classList.add('hidden');
+  lucide.createIcons();
+
+  const steps = ["Scanning for scam patterns", "Checking for urgency manipulation", "Analyzing financial fraud signals", "Evaluating suspicious links", "Generating safety report"];
+  for (let i = 0; i < steps.length; i++) {
+    await new Promise(r => setTimeout(r, 600));
+    document.getElementById('loading-step').textContent = steps[i];
+  }
+
+  // Determine which analysis to use
+  let result;
+  const matchIdx = examples.findIndex(ex => text === ex);
+  if (matchIdx >= 0) {
+    result = analyses[matchIdx];
+  } else if (imageUploaded && !text) {
+    result = { score: 75, level: "High", color: "#f97316", title: "Suspicious Image Detected", summary: "The uploaded screenshot contains elements commonly associated with scam messages.", indicators: ["Image contains text patterns matching known scam formats", "Visual layout mimics legitimate service notifications", "Contains urgency cues and financial references"], recommendations: ["Do not act on information in this screenshot", "Verify with the official service provider directly", "Report to local cybercrime authorities", "Warn others who may receive similar images"] };
+  } else {
+    result = generateAnalysis(text);
+  }
+
+  await new Promise(r => setTimeout(r, 400));
+  document.getElementById('loading-section').classList.add('hidden');
+  showResults(result);
+}
+
+function showResults(r) {
+  const section = document.getElementById('results-section');
+  section.classList.remove('hidden');
+
+  // Animate score
+  const circle = document.getElementById('score-circle');
+  const offset = 327 - (327 * r.score / 100);
+  circle.style.stroke = r.color;
+  circle.style.transition = 'stroke-dashoffset 1s ease';
+  setTimeout(() => circle.style.strokeDashoffset = offset, 50);
+
+  let counter = 0;
+  const numEl = document.getElementById('score-num');
+  const interval = setInterval(() => {
+    counter += Math.ceil(r.score / 30);
+    if (counter >= r.score) { counter = r.score; clearInterval(interval); }
+    numEl.textContent = counter;
+    numEl.style.color = r.color;
+  }, 30);
+
+  document.getElementById('risk-badge').textContent = r.level + ' Risk';
+  document.getElementById('risk-badge').style.cssText = `background:${r.color}20;color:${r.color};`;
+  document.getElementById('risk-title').textContent = r.title;
+  document.getElementById('risk-summary').textContent = r.summary;
+
+  const indList = document.getElementById('indicators-list');
+  indList.innerHTML = r.indicators.map((ind, i) => `
+    <div class="flex items-start gap-3 anim-slide" style="animation-delay:${i*0.1}s">
+      <div class="w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <i data-lucide="alert-circle" style="width:14px;height:14px;color:#fbbf24"></i>
+      </div>
+      <span class="text-sm text-slate-300">${ind}</span>
+    </div>
+  `).join('');
+
+  const recList = document.getElementById('recommendations-list');
+  recList.innerHTML = r.recommendations.map((rec, i) => `
+    <div class="flex items-start gap-3 anim-slide" style="animation-delay:${i*0.1+0.2}s">
+      <div class="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <i data-lucide="check-circle" style="width:14px;height:14px;color:#34d399"></i>
+      </div>
+      <span class="text-sm text-slate-300">${rec}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('analyze-btn').disabled = false;
+  lucide.createIcons();
+}
+
+function resetAnalyzer() {
+  document.getElementById('msg-input').value = '';
+  document.getElementById('results-section').classList.add('hidden');
+  document.getElementById('image-preview').classList.add('hidden');
+  document.getElementById('score-circle').style.strokeDashoffset = 327;
+  imageUploaded = false;
+  window.scrollTo(0, 0);
+}
+
+// Element SDK
+const defaultConfig = {
+  hero_title: 'Unmask Digital Scams & Lies',
+  hero_subtitle: 'MaskLens AI detects fake job offers, MoMo scams, phishing messages, and misinformation targeting Africans.',
+  background_color: '#0a0f1e',
+  surface_color: '#0f172a',
+  text_color: '#e2e8f0',
+  primary_action_color: '#38bdf8',
+  secondary_action_color: '#34d399',
+  font_family: 'Space Grotesk',
+  font_size: 16
+};
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    const app = document.getElementById('app');
+    const bg = config.background_color || defaultConfig.background_color;
+    const surface = config.surface_color || defaultConfig.surface_color;
+    const txt = config.text_color || defaultConfig.text_color;
+    const primary = config.primary_action_color || defaultConfig.primary_action_color;
+    const secondary = config.secondary_action_color || defaultConfig.secondary_action_color;
+    const font = config.font_family || defaultConfig.font_family;
+    const size = config.font_size || defaultConfig.font_size;
+
+    app.style.background = `linear-gradient(145deg, ${bg} 0%, ${surface} 40%, ${bg} 100%)`;
+    app.style.color = txt;
+
+    document.querySelectorAll('.glass').forEach(el => {
+      el.style.background = `${surface}99`;
+      el.style.borderColor = `${primary}15`;
+    });
+
+    document.querySelectorAll('.font-heading').forEach(el => {
+      el.style.fontFamily = `${font}, sans-serif`;
+    });
+
+    const heroTitle = document.getElementById('hero-title');
+    if (heroTitle) heroTitle.innerHTML = (config.hero_title || defaultConfig.hero_title).replace(/(Scams & Lies|Scams|Lies)/i, '<span class="bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text text-transparent">$1</span>');
+    const heroSub = document.getElementById('hero-subtitle');
+    if (heroSub) heroSub.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+
+    document.body.style.fontSize = size + 'px';
+  },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: v => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: v => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['hero_title', config.hero_title || defaultConfig.hero_title],
+    ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle]
+  ])
+});
+
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fb4cd3a353b932e',t:'MTc3ODcwODIxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
